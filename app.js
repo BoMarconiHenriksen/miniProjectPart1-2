@@ -4,10 +4,8 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 //var loggerDoc=require('./logger')
-var indexRouter = require('./routes/index');
-var apiRouter = require('./routes/api');
-var  User=require('./models/User.js')// ???
- 
+var cors = require('cors')
+var graphQlRouter = require('./routes/graph');
 var indexRouter = require('./routes/index');
 var apiRouter = require('./routes/api');
 var friendfinderwebRouter = require('./routes/friendfinderweb');
@@ -19,6 +17,7 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.set('env', 'development');
+app.use(cors())
 app.use(logger('dev'));
 //app.use(loggerDoc);
 app.use(express.json());
@@ -28,10 +27,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/api', apiRouter);
 app.use('/friendfinderweb', friendfinderwebRouter);
+app.use('/graphql', graphQlRouter);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
 });
+app.listen(4000);
+console.log('Running a GraphQL API server at localhost:4000/graphql');
 
 // error handler
 app.use(function(err, req, res, next) {

@@ -14,8 +14,36 @@ router.get('/', function (req, res, next) {
   });
 });
 
+router.post('/register', async function(req,res,next){
+
+let user= req.body;
+  const body = JSON.stringify({'firstName':user.firstName, 'lastName':user.lastName, 'userName':user.userName, 'password':user.password, 'email':user.email});
+  let registerUser = await fetch(URL + 'user', {
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    method: 'POST',
+    body: body
+ 
+  }).then(function (response) {
+   return response.json();
+  }).catch((err) => {
+    console.log('catch' + err)
+  })
+console.log(registerUser)
+  res.render('register', {
+    title: 'registreret',
+    besked: 'Velkommen! ',
+    besked2:'Du kan nu logge ind med følgende oplysninger: ',
+    user:user
+
+
+})
+})
+
+
 router.post('/loginweb', async function (req, res, next) {
-  const body=JSON.stringify({'userName': req.body.username, 'password': req.body.password, 'longitude': req.body.Longitude, 'latitude': req.body.Latitude, 'distance': req.body.distance })
+  const body=JSON.stringify({'userName': req.body.username, 'password': req.body.password, 'longitude': req.body.Longitude, 'latitude': req.body.Latitude, 'distance': req.body.distance*1000 })
   let loginUser = await fetch(URL + 'login', {
     headers: {
       'Content-Type': 'application/json'
@@ -29,7 +57,7 @@ router.post('/loginweb', async function (req, res, next) {
     console.log('catch' + err)
   })
 
-console.log(loginUser)
+console.log(loginUser.friends)
 
 if (loginUser.friends.length!==0){
   res.render('loginweb', {
